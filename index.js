@@ -34,16 +34,19 @@ async function createProject(template, projectName) {
 }
 
 async function createExpressProject(projectName) {
-  let template = "template_node";
+  const inquirer = (await import("inquirer")).default;
+
+  let template = "template_express";
   
-  const installEJS = await inquirer.prompt(
+  const { installEJS } = await inquirer.prompt(
     {
       type: 'confirm',
-      name: 'installReadlineSync',
+      name: 'installEJS',
       message: 'Do you want to install and enable EJS?',
       default: true 
     }
   );
+
   if (installEJS) {
     template = "template_express_ejs";
   }
@@ -52,9 +55,10 @@ async function createExpressProject(projectName) {
 }
 
 async function createNodeProject(projectName) {
+  const inquirer = (await import("inquirer")).default;
   let template = "template_node";
 
-  const installReadlineSync = await inquirer.prompt(
+  const { installReadlineSync } = await inquirer.prompt(
     {
       type: 'confirm',
       name: 'installReadlineSync',
@@ -92,13 +96,10 @@ async function setupProject() {
       });
 
     if (result.projectType === 'Express.js') {
-      createExpressProject(projectName.projectName);
+      await createExpressProject(projectName.projectName);
     } else if (result.projectType === 'Node.js') {
-      createNodeProject(projectName.projectName);
+      await createNodeProject(projectName.projectName);
     }
-
-
-
   } catch (error) {
     console.error('An error occurred:', error);
   }

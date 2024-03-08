@@ -34,23 +34,7 @@ async function createProject(template, projectName) {
 }
 
 async function createExpressProject(projectName) {
-  const inquirer = (await import("inquirer")).default;
-
-  let template = "template_express";
-  
-  const { installEJS } = await inquirer.prompt(
-    {
-      type: 'confirm',
-      name: 'installEJS',
-      message: 'Do you want to install and enable EJS?',
-      default: true 
-    }
-  );
-
-  if (installEJS) {
-    template = "template_express_ejs";
-  }
-
+  let template = "template_express_ejs";
   await createProject(template, projectName);
 }
 

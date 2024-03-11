@@ -12,7 +12,7 @@ app.use(express.static("public"));
 
 app.set("port", process.env.PORT || 3000);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
     res.render("index", {
         title: "Hello World",
         message: "Hello World"

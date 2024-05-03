@@ -1,4 +1,22 @@
 #!/usr/bin/env node
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+// const argv = yargs(hideBin(process.argv)).argv
+
+
+// If just one argument is passed, it will be the project name
+var argv = require('yargs/yargs')(process.argv.slice(2))
+  .usage('Usage: $0 [options]')
+  .alias('p', 'projectName')
+  .describe('p', 'Name of the project')
+  .choices('projectType', ['Express.js', 'Node.js'])
+  .alias('t', 'projectType')
+  .describe('t', 'Type of the project')
+  .help('help')
+  .parse()
+if (argv._.length === 1 && !argv.projectName) {
+  argv.projectName = argv._[0];
+}
 
 const spawn = require('cross-spawn');
 const fs = require('fs');
@@ -41,43 +59,48 @@ async function createExpressProject(projectName) {
 async function createNodeProject(projectName) {
   const inquirer = (await import("inquirer")).default;
   let template = "template_node";
-
-  const { installReadlineSync } = await inquirer.prompt(
-    {
-      type: 'confirm',
-      name: 'installReadlineSync',
-      message: 'Do you want to install the readline-sync library?',
-      default: false // Default no installation
-    }
-  );
-
-  if (installReadlineSync) {
-    template = "template_node_readline";
-  }
   await createProject(template, projectName);
 }
 
-async function setupProject() {
+async function promptProjectName() {
   const inquirer = (await import("inquirer")).default;
-  try {
-    let result = await inquirer.prompt({
+  if (argv.projectName) return { projectName: argv.projectName };
+  return await inquirer.prompt(
+    {
+      type: 'input',
+      name: 'projectName',
+      message: 'What is the name of your project?',
+      validate: function (input) {
+        if (/^[\w-]+$/.test(input)) return true;
+        return 'Project name can only include letters, numbers, underscores, and hyphens.';
+      }
+    });
+}
+
+async function promptProjectType() {
+  const inquirer = (await import("inquirer")).default;
+  let choices = ['Express.js', 'Node.js'];
+  if (argv.projectType) {
+    if (choices.includes(argv.projectType)) {
+      return { projectType: argv.projectType };
+    } else {
+      console.error('Invalid project type. Please choose from Express.js or Node.js.');
+      process.exit(1);
+    }
+  }
+  return await inquirer.prompt(
+    {
       type: 'list',
       name: 'projectType',
       message: 'What type of project would you like to create?',
-      choices: ['Node.js', 'Express.js'],
-      default: 'Simple Node.js',
+      choices: choices
     });
+}
 
-    let projectName = await inquirer.prompt(
-      {
-        type: 'input',
-        name: 'projectName',
-        message: 'What is the name of your project?',
-        validate: function (input) {
-          if (/^[\w-]+$/.test(input)) return true;
-          return 'Project name can only include letters, numbers, underscores, and hyphens.';
-        }
-      });
+async function setupProject() {
+  try {
+    let result = await promptProjectType();
+    let projectName = await promptProjectName();
 
     if (result.projectType === 'Express.js') {
       await createExpressProject(projectName.projectName);

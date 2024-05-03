@@ -1,11 +1,12 @@
 {
     "name": "create-clean-node",
-    "version": "1.0.8",
+    "version": "1.1.0",
     "bin": {
         "create-my-template": "./index.js"
     },
     "dependencies": {
         "cross-spawn": "^7.0.3",
-        "inquirer": "^9.2.14"
+        "inquirer": "^9.2.14",
+        "yargs": "^17.7.2"
     }
 }

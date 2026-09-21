@@ -28,7 +28,10 @@ async function createProject(template, projectName) {
   fs.mkdirSync(projectDir, { recursive: true });
 
   const templateDir = path.resolve(__dirname, template);
-  fs.cpSync(templateDir, projectDir, { recursive: true });
+  fs.cpSync(templateDir, projectDir, {
+    recursive: true,
+    filter: (source) => path.basename(source) !== 'node_modules'
+  });
 
   const projectPackageJsonPath = path.join(projectDir, 'package.json');
   if (fs.existsSync(projectPackageJsonPath)) {

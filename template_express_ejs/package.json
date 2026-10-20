@@ -10,7 +10,8 @@
   "scripts": {
     "test": "npm run typecheck && vitest run",
     "typecheck": "tsc --noEmit",
-    "start": "nodemon --ext ts,json --exec \"npm run typecheck && node index.ts\""
+    "typecheck:watch": "tsc --noEmit --watch",
+    "start": "npm run typecheck && node --watch index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +20,6 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.2",
     "@types/supertest": "^7.2.1",
-    "nodemon": "^3.1.14",
     "supertest": "^7.2.2",
     "typescript": "^7.0.2",
     "vitest": "^5.0.1"

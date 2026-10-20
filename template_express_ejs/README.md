@@ -7,12 +7,13 @@ npm install
 npm start
 ```
 
-`npm start` watches TypeScript and JSON files with nodemon. Before each start or
-restart, it checks the project with `tsc --noEmit`, then runs `index.ts` directly
-with Node. Type errors prevent the server from starting; fixing and saving the
-file triggers another check. `npm run typecheck` checks types without running the
-server, and `npm test` checks types and runs Vitest once. Import test helpers from
-`vitest`.
+`npm start` checks the project with `tsc --noEmit`, then runs `index.ts` directly
+with `node --watch`. Type errors prevent the server from starting. Once running,
+Node restarts the server when `index.ts` or any module it imports changes, without
+checking types again. `npm run typecheck` checks types without running the server,
+and `npm run typecheck:watch` rechecks them whenever a file changes; run it in a
+second terminal alongside `npm start`. `npm test` checks types and runs Vitest
+once. Import test helpers from `vitest`.
 
 Use ES modules, explicit `.ts` extensions for local imports, and `import type`
 for type-only imports. TypeScript syntax that needs transformation, such as enums
